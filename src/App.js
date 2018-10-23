@@ -1,28 +1,68 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ArtistRow from './components/ArtistRow'
+import $ from 'jquery'
+
 
 class App extends Component {
-  render() {
+
+  constructor (props){
+    super(props)
+    this.state = {}
+
+
+    this.performSearch()
+  }   
+  performSearch() {
+      console.log('searching')
+      const urlString ="http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=cher&api_key=e941da3543824deaddb92310754b2a2d&format=json"
+      $.ajax({
+        url: urlString,
+        success:(searchResults) => { 
+          console.log('fetch data') 
+          //console.log(searchResults);
+          const result= searchResults.result
+
+          var artistRows=[]
+
+        /*   result.forEach((artist)=>{
+            console.log(artist.name);
+            const artistRow= <ArtistRow artist= {artist}/>
+            artistRows.push(artistRow)
+          }) */
+
+          this.setState({rows: artistRows})
+    
+        },
+        error: (xhr, status, err)=>{
+          console.log('failed fetch'); 
+        }
+      })
+  }
+
+
+  render () {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+      <table className="titleBar" >
+        <tbody>
+          <tr>
+            <td>
+              <img alt="icon" width ="50" src="spotify-brands.svg" />
+            </td>
+            <td width="20"/>
+            <td>
+              <h2>Ranking Artist</h2>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <input className="imput" placeholder="Busca a tu artista"/>
+      {this.state.rows}
       </div>
     );
-  }
+  };
+  
 }
 
 export default App;
